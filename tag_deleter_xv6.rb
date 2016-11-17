@@ -33,11 +33,19 @@ for i in lines do
 	text = tmp 
 	tmp = text.gsub(/<span class="text_24">(.*?)<\/span>/, '\1')
 	text = tmp 
+	tmp = text.gsub(/<span class="text_12">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="text_13">(.*?)<\/span>/, '\1')
+	text = tmp 
 	tmp = text.gsub(/<span class="text_9">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="tab">(.*?)<\/span>/, '\1')
 	text = tmp 
 	tmp = text.gsub(/<span class="bullet_">(.*?)<\/span>/, '\1')
 	text = tmp 
 	tmp = text.gsub(/<span class="calibre6">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="text_4">(.*?)<\/span>/, '\1')
 	text = tmp 
 	tmp = text.gsub(/text_8/, 'text_3')
 	text = tmp 

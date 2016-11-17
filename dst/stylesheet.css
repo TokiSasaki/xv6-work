@@ -57,22 +57,17 @@
     }
 .block_6 {
     display: block;
-    font-size: 1.66667em;
+    font-size: 32px;
     font-weight: bold;
     line-height: 1.2;
     page-break-after: avoid;
     page-break-inside: avoid;
-    text-indent: -0.5pt;
     padding: 0;
-    margin: 0 0 0 -69.4pt
     }
 .block_7 {
     color: black;
     display: block;
-    font-size: 0.75em;
-    line-height: 1.08;
-    padding: 0;
-    margin: 0 0.75pt 8pt
+    font-size: 16px;
     }
 .block_8 {
     display: block;
@@ -2437,7 +2432,6 @@
     }
 .calibre1 {
     line-height: 1.2;
-    text-decoration: none
     }
 .calibre2 {
     font-weight: bold;
@@ -2462,11 +2456,9 @@
     }
 .calibre7 {
     display: block;
-    height: 325pt;
-    line-height: 1.2;
+	width: 100%;
     margin-left: auto;
     margin-right: auto;
-    width: 433pt
     }
 .calibre8 {
     display: table;
