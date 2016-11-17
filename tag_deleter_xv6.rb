@@ -25,13 +25,33 @@ for i in lines do
 	text = tmp 
 	tmp = text.gsub(/<span class="text_7">(.*?)<\/span>/, '\1')
 	text = tmp 
-	tmp = text.gsub(/text_8/, 'text_3')
+	tmp = text.gsub(/<span class="text_11">(.*?)<\/span>/, '\1')
 	text = tmp 
-	tmp = text.gsub(/block_../, 'paragraph01')
+	tmp = text.gsub(/<span class="text_20">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="text_23">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="text_24">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="text_9">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="bullet_">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/<span class="calibre6">(.*?)<\/span>/, '\1')
+	text = tmp 
+	tmp = text.gsub(/text_8/, 'text_3')
 	text = tmp 
 	tmp = text.gsub(/text_6/, 'text_5')
 	text = tmp 
-	tmp = text.gsub(/\t<p class/, "<p class")
+	tmp = text.gsub(/’/, '\'')
+	text = tmp 
+	tmp = text.gsub(/‘/, '\'')
+	text = tmp 
+	tmp = text.gsub(/<b class="calibre2">/, '<b>')
+	text = tmp 
+	tmp = text.gsub(/<p class="block_...">/, '<p class="paragraph01">')
+	text = tmp 
+	tmp = text.gsub(/<p class="block_..">/, '<p class="paragraph01">')
 	text = tmp 
 	tmp = text.gsub(/\t<p class/, "<p class")
 	text = tmp 
