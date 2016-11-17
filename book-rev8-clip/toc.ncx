@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='utf-8'?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="eng">
+  <head>
+    <meta content="672004db-a635-40bd-b710-2bde6f2d30f4" name="dtb:uid"/>
+    <meta content="2" name="dtb:depth"/>
+    <meta content="calibre (2.48.0)" name="dtb:generator"/>
+    <meta content="0" name="dtb:totalPageCount"/>
+    <meta content="0" name="dtb:maxPageNumber"/>
+  </head>
+  <docTitle>
+    <text>xv6 - DRAFT as of September 3, 2014</text>
+  </docTitle>
+  <navMap>
+    <navPoint class="chapter" id="num_1" playOrder="1">
+      <navLabel>
+        <text>Operating system interfaces</text>
+      </navLabel>
+      <content src="index_split_003.html#id_Toc460887574"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_2" playOrder="2">
+      <navLabel>
+        <text>Operating system organization</text>
+      </navLabel>
+      <content src="index_split_003.html#id_Toc460887575"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_3" playOrder="3">
+      <navLabel>
+        <text>Page tables</text>
+      </navLabel>
+      <content src="index_split_004.html#id_Toc460887576"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_4" playOrder="4">
+      <navLabel>
+        <text>Traps, interrupts, and drivers</text>
+      </navLabel>
+      <content src="index_split_004.html#id_Toc460887577"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_5" playOrder="5">
+      <navLabel>
+        <text>Locking</text>
+      </navLabel>
+      <content src="index_split_004.html#id_Toc460887578"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_6" playOrder="6">
+      <navLabel>
+        <text>Scheduling</text>
+      </navLabel>
+      <content src="index_split_005.html#id_Toc460887579"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_7" playOrder="7">
+      <navLabel>
+        <text>File system</text>
+      </navLabel>
+      <content src="index_split_006.html#id_Toc460887580"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_8" playOrder="8">
+      <navLabel>
+        <text>Summary</text>
+      </navLabel>
+      <content src="index_split_007.html#id_Toc460887581"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_9" playOrder="9">
+      <navLabel>
+        <text>PC hardware</text>
+      </navLabel>
+      <content src="index_split_008.html#id_Toc460887582"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_10" playOrder="10">
+      <navLabel>
+        <text>The boot loader</text>
+      </navLabel>
+      <content src="index_split_009.html#id_Toc460887583"/>
+    </navPoint>
+    <navPoint class="chapter" id="num_11" playOrder="11">
+      <navLabel>
+        <text>Index</text>
+      </navLabel>
+      <content src="index_split_010.html"/>
+    </navPoint>
+  </navMap>
+</ncx>
