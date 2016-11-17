@@ -21,13 +21,15 @@ f = File.open(ARGV[1], "w")
 
 for i in lines do
 #	text = i.gsub(/<span class="text_2">(.*?)<\/span>/, '\1')
-	tmp = i.gsub(/<span class="text_02">(.*?)<\/span>/, '\1')
+	tmp = i.gsub(/<span class="text_2">(.*?)<\/span>/, '\1')
 	text = tmp 
-	tmp = text.gsub(/<span class="text_07">(.*?)<\/span>/, '\1')
+	tmp = text.gsub(/<span class="text_7">(.*?)<\/span>/, '\1')
 	text = tmp 
-	tmp = text.gsub(/text_08/, 'text_03')
+	tmp = text.gsub(/text_8/, 'text_3')
 	text = tmp 
-	tmp = text.gsub(/text_06/, 'text_05')
+	tmp = text.gsub(/block_../, 'paragraph01')
+	text = tmp 
+	tmp = text.gsub(/text_6/, 'text_5')
 	text = tmp 
 	tmp = text.gsub(/\t<p class/, "<p class")
 	text = tmp 
