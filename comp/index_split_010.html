@@ -1,0 +1,321 @@
+<?xml version='1.0' encoding='utf-8'?>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+  <head>
+    <title>xv6 - DRAFT as of September 3, 2014</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+  <link href="stylesheet.css" rel="stylesheet" type="text/css"/>
+<link href="page_styles.css" rel="stylesheet" type="text/css"/>
+</head>
+  <body class="calibre">
+<h1 id="id_Toc460887584">Index</h1>
+<p class="paragraph01"><span class="text_3">.</span>, 81, 83</p>
+<p class="paragraph01"><span class="text_3">..</span>, 81, 83</p>
+<p class="paragraph01"><span class="text_3">/init</span>, 27, 35</p>
+<p class="paragraph01"><span class="text_3">_binary_initcode_size</span>, 25</p>
+<p class="paragraph01"><span class="text_3">_binary_initcode_start</span>, 25</p>
+<p class="paragraph01"><span class="text_3">_start</span>, 96</p>
+<p class="paragraph01">absorption, 76</p>
+<p class="paragraph01"><span class="text_3">acquire</span>, 51–52, 54</p>
+<p class="paragraph01"><span class="text_3">addl</span>, 26</p>
+<p class="paragraph01">address space, 21</p>
+<p class="paragraph01"><span class="text_3">allocproc</span>, 24</p>
+<p class="paragraph01"><span class="text_3">allocuvm</span>, 26, 35</p>
+<p class="paragraph01"><span class="text_3">alltraps</span>, 40–41</p>
+<p class="paragraph01"><span class="text_3">argc</span>, 35</p>
+<p class="paragraph01"><span class="text_3">argint</span>, 43</p>
+<p class="paragraph01"><span class="text_3">argptr</span>, 43</p>
+<p class="paragraph01"><span class="text_3">argstr</span>, 43</p>
+<p class="paragraph01"><span class="text_3">argv</span>, 35</p>
+<p class="paragraph01">atomic, 51</p>
+<p class="paragraph01"><span class="text_3">B_BUSY</span>, 45, 73–74</p>
+<p class="paragraph01"><span class="text_3">B_DIRTY</span>, 45–47, 73–74</p>
+<p class="paragraph01"><span class="text_3">B_VALID</span>, 45–47, 73</p>
+<p class="paragraph01"><span class="text_3">balloc</span>, 77–78</p>
+<p class="paragraph01">batch, 47, 75</p>
+<p class="paragraph01"><span class="text_3">bcache.head</span>, 73</p>
+<p class="paragraph01"><span class="text_3">begin_op</span>, 76</p>
+<p class="paragraph01"><span class="text_3">bfree</span>, 77</p>
+<p class="paragraph01"><span class="text_3">bget</span>, 73</p>
+<p class="paragraph01"><span class="text_3">binit</span>, 73 block, 45</p>
+<p class="paragraph01"><span class="text_3">bmap</span>, 79</p>
+<p class="paragraph01">boot loader, 22, 93–95</p>
+<p class="paragraph01"><span class="text_3">bootmain</span>, 95</p>
+<p class="paragraph01"><span class="text_3">bread</span>, 72, 74</p>
+<p class="paragraph01"><span class="text_3">brelse</span>, 72, 74</p>
+<p class="paragraph01"><span class="text_3">BSIZE</span>, 79 buf, 72</p>
+<p class="paragraph01"><span class="text_3">buf_table_lock</span>, 73</p>
+<p class="paragraph01">buffer, 45 busy waiting, 46</p>
+<p class="paragraph01"><span class="text_3">bwrite</span>, 72, 74, 76</p>
+<p class="paragraph01"><span class="text_3">chan</span>, 62, 65</p>
+<p class="paragraph01">child process, 8</p>
+<p class="paragraph01"><span class="text_3">cli</span>, 44, 54</p>
+<p class="paragraph01">commit, 74</p>
+<p class="paragraph01">conditional synchronization, 61</p>
+<p class="paragraph01">contexts, 58</p>
+<p class="paragraph01">control registers, 90</p>
+<p class="paragraph01">convoys, 68</p>
+<p class="paragraph01"><span class="text_3">copyout</span>, 35</p>
+<p class="paragraph01">coroutines, 60</p>
+<p class="paragraph01"><span class="text_3">cp-&gt;tf</span>, 42</p>
+<p class="paragraph01"><span class="text_3">cpu-&gt;scheduler</span>, 26, 58–59</p>
+<p class="paragraph01"><span class="text_3">CR0_PE</span>, 95</p>
+<p class="paragraph01"><span class="text_3">CR0_PG</span>, 23</p>
+<p class="paragraph01"><span class="text_3">CR_PSE</span>, 36</p>
+<p class="paragraph01">crash recovery, 71</p>
+<p class="paragraph01"><span class="text_3">create</span>, 83</p>
+<p class="paragraph01">current directory, 14</p>
+<p class="paragraph01">deadlocked, 63</p>
+<p class="paragraph01">direct blocks, 79</p>
+<p class="paragraph01"><span class="text_3">dirlink</span>, 81</p>
+<p class="paragraph01"><span class="text_3">dirlookup</span>, 81–83</p>
+<p class="paragraph01"><span class="text_3">DIRSIZ</span>, 81</p>
+<p class="paragraph01"><span class="text_3">DPL_USER</span>, 25, 40</p>
+<p class="paragraph01">driver, 45</p>
+<p class="paragraph01"><span class="text_3">dup</span>, 82</p>
+<p class="paragraph01">ELF format, 34</p>
+<p class="paragraph01"><span class="text_3">ELF_MAGIC</span>, 34</p>
+<p class="paragraph01"><span class="text_3">EMBRYO</span>, 24</p>
+<p class="paragraph01"><span class="text_3">end_op</span>, 76</p>
+<p class="paragraph01"><span class="text_3">entry</span>, 22–23, 96</p>
+<p class="paragraph01"><span class="text_3">entrypgdir</span>, 23</p>
+<p class="paragraph01">exception, 37</p>
+<p class="paragraph01"><span class="text_3">exec</span>, 9–11, 27, 35, 40</p>
+<p class="paragraph01"><span class="text_3">exit</span>, 8, 27, 59–60, 67</p>
+<p class="paragraph01"><span class="text_3">fetchint</span>, 43</p>
+<p class="paragraph01">file descriptor, 10</p>
+<p class="paragraph01"><span class="text_3">filealloc</span>, 82</p>
+<p class="paragraph01"><span class="text_3">fileclose</span>, 82</p>
+<p class="paragraph01"><span class="text_3">filedup</span>, 82</p>
+<p class="paragraph01"><span class="text_3">fileread</span>, 82, 85</p>
+<p class="paragraph01"><span class="text_3">filestat</span>, 82</p>
+<p class="paragraph01"><span class="text_3">filewrite</span>, 76, 82, 85</p>
+<p class="paragraph01"><span class="text_3">FL</span>, 40</p>
+<p class="paragraph01"><span class="text_3">FL_IF</span>, 25</p>
+<p class="paragraph01"><span class="text_3">fork</span>, 8, 10–11, 82</p>
+<p class="paragraph01"><span class="text_3">forkret</span>, 24–26, 60</p>
+<p class="paragraph01"><span class="text_3">freerange</span>, 33</p>
+<p class="paragraph01"><span class="text_3">fsck</span>, 84</p>
+<p class="paragraph01"><span class="text_3">ftable</span>, 82</p>
+<p class="paragraph01"><span class="text_3">gdt</span>, 94–95</p>
+<p class="paragraph01"><span class="text_3">gdtdesc</span>, 95</p>
+<p class="paragraph01"><span class="text_3">getcmd</span>, 10</p>
+<p class="paragraph01">global descriptor table, 95</p>
+<p class="paragraph01">group commit, 75</p>
+<p class="paragraph01">I/O ports, 91</p>
+<p class="paragraph01"><span class="text_3">I_BUSY</span>, 78–79</p>
+<p class="paragraph01"><span class="text_3">I_VALID</span>, 79</p>
+<p class="paragraph01"><span class="text_3">ialloc</span>, 78–79, 83</p>
+<p class="paragraph01"><span class="text_3">IDE_BSY</span>, 46</p>
+<p class="paragraph01"><span class="text_3">IDE_DRDY</span>, 46</p>
+<p class="paragraph01"><span class="text_3">IDE_IRQ</span>, 45</p>
+<p class="paragraph01"><span class="text_3">ideinit</span>, 45–46</p>
+<p class="paragraph01"><span class="text_3">ideintr</span>, 46, 54</p>
+<p class="paragraph01"><span class="text_3">idelock</span>, 53–54</p>
+<p class="paragraph01"><span class="text_3">iderw</span>, 46, 52, 54–55, 73–74</p>
+<p class="paragraph01"><span class="text_3">idestart</span>, 46</p>
+<p class="paragraph01"><span class="text_3">idewait</span>, 46</p>
+<p class="paragraph01"><span class="text_3">idt</span>, 40</p>
+<p class="paragraph01"><span class="text_3">idtinit</span>, 44</p>
+<p class="paragraph01"><span class="text_3">IF</span>, 44</p>
+<p class="paragraph01"><span class="text_3">iget</span>, 78–79, 81</p>
+<p class="paragraph01"><span class="text_3">ilock</span>, 78, 81</p>
+<p class="paragraph01"><span class="text_3">inb</span>, 44</p>
+<p class="paragraph01">indirect block, 79</p>
+<p class="paragraph01"><span class="text_3">initcode</span>, 27</p>
+<p class="paragraph01"><span class="text_3">initcode.S</span>, 25–26, 39</p>
+<p class="paragraph01"><span class="text_3">initlog</span>, 76</p>
+<p class="paragraph01"><span class="text_3">initproc</span>, 26</p>
+<p class="paragraph01"><span class="text_3">inituvm</span>, 25</p>
+<p class="paragraph01">inode, 15, 71, 77</p>
+<p class="paragraph01"><span class="text_3">insl</span>, 46</p>
+<p class="paragraph01"><span class="text_3">install_trans</span>, 76</p>
+<p class="paragraph01">instruction pointer, 90</p>
+<p class="paragraph01"><span class="text_3">int</span>, 38–40</p>
+<p class="paragraph01">interface design, 7</p>
+<p class="paragraph01">interrupt, 37</p>
+<p class="paragraph01">interrupt handler, 38</p>
+<p class="paragraph01"><span class="text_3">ioapicenable</span>, 45</p>
+<p class="paragraph01"><span class="text_3">iput</span>, 78–79</p>
+<p class="paragraph01"><span class="text_3">iret</span>, 26, 39, 42</p>
+<p class="paragraph01"><span class="text_3">IRQ_TIMER,</span>, 44 isolation, 17</p>
+<p class="paragraph01"><span class="text_3">itrunc</span>, 79–80</p>
+<p class="paragraph01"><span class="text_3">iunlock</span>, 78</p>
+<p class="paragraph01"><span class="text_3">iupdate</span>, 79</p>
+<p class="paragraph01"><span class="text_3">kalloc</span>, 33</p>
+<p class="paragraph01"><span class="text_3">KERNBASE</span>, 22</p>
+<p class="paragraph01">kernel, 7, 19</p>
+<p class="paragraph01">kernel mode, 19, 38</p>
+<p class="paragraph01">kernel space, 7, 19</p>
+<p class="paragraph01"><span class="text_3">kfree</span>, 33</p>
+<p class="paragraph01"><span class="text_3">kinit1</span>, 33</p>
+<p class="paragraph01"><span class="text_3">kinit2</span>, 33</p>
+<p class="paragraph01"><span class="text_3">kmap</span>, 32</p>
+<p class="paragraph01"><span class="text_3">kvmalloc</span>, 30, 32</p>
+<p class="paragraph01"><span class="text_3">lapicinit</span>, 44</p>
+<p class="paragraph01">linear address, 93–94</p>
+<p class="paragraph01">links, 15</p>
+<p class="paragraph01"><span class="text_3">loaduvm</span>, 35</p>
+<p class="paragraph01">lock, 49</p>
+<p class="paragraph01">log, 74</p>
+<p class="paragraph01"><span class="text_3">log_write</span>, 76</p>
+<p class="paragraph01">logical address, 93–94</p>
+<p class="paragraph01"><span class="text_3">main</span>, 23, 26, 32–33, 40, 45, 73</p>
+<p class="paragraph01"><span class="text_3">malloc</span>, 10</p>
+<p class="paragraph01"><span class="text_3">mappages</span>, 32</p>
+<p class="paragraph01">memory-mapped I/O, 91</p>
+<p class="paragraph01">microkernel, 20</p>
+<p class="paragraph01"><span class="text_3">mkdev</span>, 83</p>
+<p class="paragraph01"><span class="text_3">mkdir</span>, 83</p>
+<p class="paragraph01">monolithic kernel, 17, 19</p>
+<p class="paragraph01"><span class="text_3">mpmain</span>, 26</p>
+<p class="paragraph01">multiplex, 57</p>
+<p class="paragraph01"><span class="text_3">namei</span>, 25, 34, 83</p>
+<p class="paragraph01"><span class="text_3">nameiparent</span>, 81, 83</p>
+<p class="paragraph01"><span class="text_3">namex</span>, 81</p>
+<p class="paragraph01"><span class="text_3">NBUF</span>, 73</p>
+<p class="paragraph01"><span class="text_3">NDIRECT</span>, 79</p>
+<p class="paragraph01"><span class="text_3">NINDIRECT</span>, 79</p>
+<p class="paragraph01"><span class="text_3">O_CREATE</span>, 83</p>
+<p class="paragraph01"><span class="text_3">open</span>, 82–83</p>
+<p class="paragraph01"><span class="text_3">outb</span>, 44</p>
+<p class="paragraph01"><span class="text_3">p-&gt;context</span>, 24, 26, 60</p>
+<p class="paragraph01"><span class="text_3">p-&gt;cwd</span>, 25</p>
+<p class="paragraph01"><span class="text_3">p-&gt;kstack</span>, 22, 67</p>
+<p class="paragraph01"><span class="text_3">p-&gt;name</span>, 25</p>
+<p class="paragraph01"><span class="text_3">p-&gt;pgdir</span>, 22, 67</p>
+<p class="paragraph01"><span class="text_3">p-&gt;state</span>, 22</p>
+<p class="paragraph01"><span class="text_3">p-&gt;sz</span>, 43</p>
+<p class="paragraph01"><span class="text_3">p-&gt;xxx</span>, 21</p>
+<p class="paragraph01">page, 29</p>
+<p class="paragraph01">page directory, 29</p>
+<p class="paragraph01">page table entries (PTEs), 29</p>
+<p class="paragraph01">page table pages, 29</p>
+<p class="paragraph01"><span class="text_3">panic</span>, 42</p>
+<p class="paragraph01">parent process, 8</p>
+<p class="paragraph01">path, 14</p>
+<p class="paragraph01">persistence, 71</p>
+<p class="paragraph01"><span class="text_3">PGROUNDUP</span>, 33</p>
+<p class="paragraph01">physical address, 21, 93</p>
+<p class="paragraph01"><span class="text_3">PHYSTOP</span>, 32–33</p>
+<p class="paragraph01"><span class="text_3">picenable</span>, 45</p>
+<p class="paragraph01"><span class="text_3">pid</span>, 8, 24</p>
+<p class="paragraph01">pipe, 13</p>
+<p class="paragraph01"><span class="text_3">piperead</span>, 65</p>
+<p class="paragraph01"><span class="text_3">pipewrite</span>, 65</p>
+<p class="paragraph01">polling, 46</p>
+<p class="paragraph01"><span class="text_3">popal</span>, 26</p>
+<p class="paragraph01"><span class="text_3">popcli</span>, 54</p>
+<p class="paragraph01"><span class="text_3">popl</span>, 26</p>
+<p class="paragraph01"><span class="text_3">printf</span>, 9</p>
+<p class="paragraph01">priority inversion, 68</p>
+<p class="paragraph01">privileged instructions, 19</p>
+<p class="paragraph01"><span class="text_3">proc-&gt;killed</span>, 42</p>
+<p class="paragraph01">process, 7–8, 20</p>
+<p class="paragraph01">program counter, 89</p>
+<p class="paragraph01">programmable interrupt controler (PIC), 44</p>
+<p class="paragraph01">protected mode, 94–95</p>
+<p class="paragraph01"><span class="text_3">ptable</span>, 54</p>
+<p class="paragraph01"><span class="text_3">ptable.lock</span>, 59–60, 64–65</p>
+<p class="paragraph01"><span class="text_3">PTE_P</span>, 29</p>
+<p class="paragraph01"><span class="text_3">PTE_U</span>, 26, 30–32</p>
+<p class="paragraph01"><span class="text_3">PTE_W</span>, 29</p>
+<p class="paragraph01"><span class="text_3">pushcli</span>, 54</p>
+<p class="paragraph01">race condition, 50</p>
+<p class="paragraph01"><span class="text_3">read</span>, 82</p>
+<p class="paragraph01"><span class="text_3">readi</span>, 35, 79–80</p>
+<p class="paragraph01"><span class="text_3">readsb</span>, 77</p>
+<p class="paragraph01"><span class="text_3">readseg</span>, 96</p>
+<p class="paragraph01">real mode, 93</p>
+<p class="paragraph01"><span class="text_3">recover_from_log</span>, 76</p>
+<p class="paragraph01">recursive locks, 52</p>
+<p class="paragraph01"><span class="text_3">release</span>, 52, 54–55</p>
+<p class="paragraph01"><span class="text_3">ret</span>, 26</p>
+<p class="paragraph01">root, 14</p>
+<p class="paragraph01">round robin, 68</p>
+<p class="paragraph01"><span class="text_3">RUNNABLE</span>, 25, 60, 64–66</p>
+<p class="paragraph01"><span class="text_3">sbrk</span>, 10, 34</p>
+<p class="paragraph01"><span class="text_3">sched</span>, 58–60, 64, 67</p>
+<p class="paragraph01"><span class="text_3">scheduler</span>, 26, 59–60</p>
+<p class="paragraph01">sector, 45</p>
+<p class="paragraph01"><span class="text_3">SEG_KCPU</span>, 41</p>
+<p class="paragraph01"><span class="text_3">SEG_KDATA</span>, 95</p>
+<p class="paragraph01"><span class="text_3">SEG_TSS</span>, 26</p>
+<p class="paragraph01"><span class="text_3">SEG_UCODE</span>, 25</p>
+<p class="paragraph01"><span class="text_3">SEG_UDATA</span>, 25</p>
+<p class="paragraph01"><span class="text_3">seginit</span>, 36</p>
+<p class="paragraph01">segment descriptor table, 94</p>
+<p class="paragraph01">segment registers, 90</p>
+<p class="paragraph01">sequence coordination, 61</p>
+<p class="paragraph01"><span class="text_3">setupkvm</span>, 25–26, 32, 35</p>
+<p class="paragraph01"><span class="text_3">signal</span>, 69</p>
+<p class="paragraph01"><span class="text_3">skipelem</span>, 81</p>
+<p class="paragraph01"><span class="text_3">sleep</span>, 54, 59, 62–64, 73</p>
+<p class="paragraph01"><span class="text_3">SLEEPING</span>, 64–65</p>
+<p class="paragraph01"><span class="text_3">stat</span>, 81–82</p>
+<p class="paragraph01"><span class="text_3">stati</span>, 81–82</p>
+<p class="paragraph01"><span class="text_3">sti</span>, 44, 54</p>
+<p class="paragraph01"><span class="text_3">stosb</span>, 96</p>
+<p class="paragraph01"><span class="text_3">struct buf</span>, 45</p>
+<p class="paragraph01"><span class="text_3">struct context</span>, 58</p>
+<p class="paragraph01"><span class="text_3">struct dinode</span>, 77, 79</p>
+<p class="paragraph01"><span class="text_3">struct dirent</span>, 81</p>
+<p class="paragraph01"><span class="text_3">struct elfhdr</span>, 34</p>
+<p class="paragraph01"><span class="text_3">struct file</span>, 82</p>
+<p class="paragraph01"><span class="text_3">struct inode</span>, 77</p>
+<p class="paragraph01"><span class="text_3">struct pipe</span>, 65</p>
+<p class="paragraph01"><span class="text_3">struct proc</span>, 21, 66</p>
+<p class="paragraph01"><span class="text_3">struct run</span>, 33</p>
+<p class="paragraph01"><span class="text_3">struct spinlock</span>, 51</p>
+<p class="paragraph01"><span class="text_3">struct trapframe</span>, 25</p>
+<p class="paragraph01">superblock, 72</p>
+<p class="paragraph01"><span class="text_3">switchuvm</span>, 26, 40, 44, 60</p>
+<p class="paragraph01"><span class="text_3">swtch</span>, 26, 58–60, 67</p>
+<p class="paragraph01"><span class="text_3">sys_exec</span>, 40</p>
+<p class="paragraph01"><span class="text_3">SYS_exec</span>, 27, 42</p>
+<p class="paragraph01"><span class="text_3">sys_link</span>, 82–83</p>
+<p class="paragraph01"><span class="text_3">sys_mkdir</span>, 83</p>
+<p class="paragraph01"><span class="text_3">sys_mknod</span>, 83</p>
+<p class="paragraph01"><span class="text_3">sys_open</span>, 83</p>
+<p class="paragraph01"><span class="text_3">sys_pipe</span>, 83</p>
+<p class="paragraph01"><span class="text_3">sys_sleep</span>, 54</p>
+<p class="paragraph01"><span class="text_3">sys_unlink</span>, 82</p>
+<p class="paragraph01"><span class="text_3">syscall</span>, 42</p>
+<p class="paragraph01">system call, 7</p>
+<p class="paragraph01"><span class="text_3">T_DEV</span>, 80</p>
+<p class="paragraph01"><span class="text_3">T_DIR</span>, 81</p>
+<p class="paragraph01"><span class="text_3">T_FILE</span>, 83</p>
+<p class="paragraph01"><span class="text_3">T_SYSCALL</span>, 27, 40, 42</p>
+<p class="paragraph01"><span class="text_3">tf-&gt;trapno</span>, 42</p>
+<p class="paragraph01">thread, 21</p>
+<p class="paragraph01">thundering herd, 68</p>
+<p class="paragraph01"><span class="text_3">ticks</span>, 54</p>
+<p class="paragraph01"><span class="text_3">tickslock</span>, 54</p>
+<p class="paragraph01">time-share, 8, 17</p>
+<p class="paragraph01"></p>
+<p class="paragraph01"><span class="text_3">timer.c</span>, 44</p>
+<p class="paragraph01">transaction, 71</p>
+<p class="paragraph01"><span class="text_3">trap</span>, 41–42, 45–46, 58</p>
+<p class="paragraph01"><span class="text_3">trapret</span>, 24–26, 42</p>
+<p class="paragraph01">traps, 38</p>
+<p class="paragraph01">tvinit, 40</p>
+<p class="paragraph01">type cast, 33</p>
+<p class="paragraph01"><span class="text_3">unlink</span>, 75</p>
+<p class="paragraph01">user memory, 21</p>
+<p class="paragraph01">user mode, 19, 38</p>
+<p class="paragraph01">user space, 7, 19</p>
+<p class="paragraph01"><span class="text_3">userinit</span>, 25–26</p>
+<p class="paragraph01"><span class="text_3">ustack</span>, 35</p>
+<p class="paragraph01"><span class="text_3">V2P_WO</span>, 23</p>
+<p class="paragraph01"><span class="text_3">vectors[i]</span>, 40</p>
+<p class="paragraph01">virtual address, 21, 94</p>
+<p class="paragraph01">wait channel, 62</p>
+<p class="paragraph01"><span class="text_3">wait</span>, 9, 60, 66</p>
+<p class="paragraph01"><span class="text_3">wakeup</span>, 45, 54, 62, 64–65</p>
+<p class="paragraph01"><span class="text_3">wakeup1</span>, 65</p>
+<p class="paragraph01"><span class="text_3">walkpgdir</span>, 32, 35</p>
+<p class="paragraph01"><span class="text_3">write</span>, 75, 82</p>
+<p class="paragraph01"><span class="text_3">writei</span>, 76, 79–80</p>
+<p class="paragraph01"><span class="text_3">xchg</span>, 52, 54</p>
+<p class="paragraph01"><span class="text_3">yield</span>, 58–60</p>
+<p class="paragraph01"><span class="text_3">ZOMBIE</span>, 66</p>
+</body></html>
