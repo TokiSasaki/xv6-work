@@ -12,7 +12,24 @@
   <manifest>
     <item href="cover_image.jpg" id="cover" media-type="image/jpeg"/>
     <item href="images/image-1.png" id="id3" media-type="image/png"/>
-    <item href="images/image.png" id="id4" media-type="image/png"/>
+    <item href="images/figure0-1.png" id="img01" media-type="image/png"/>
+    <item href="images/figure1-1.png" id="img02" media-type="image/png"/>
+    <item href="images/figure1-2.png" id="img03" media-type="image/png"/>
+    <item href="images/figure1-3.png" id="img04" media-type="image/png"/>
+    <item href="images/figure1-4.png" id="img05" media-type="image/png"/>
+    <item href="images/figure2-1.png" id="img06" media-type="image/png"/>
+    <item href="images/figure2-2.png" id="img07" media-type="image/png"/>
+    <item href="images/figure2-3.png" id="img08" media-type="image/png"/>
+    <item href="images/figure3-1.png" id="img09" media-type="image/png"/>
+    <item href="images/figure3-2.png" id="img10" media-type="image/png"/>
+    <item href="images/figure4-1.png" id="img11" media-type="image/png"/>
+    <item href="images/figure5-1.png" id="img12" media-type="image/png"/>
+    <item href="images/figure5-2.png" id="img13" media-type="image/png"/>
+    <item href="images/figure6-1.png" id="img14" media-type="image/png"/>
+    <item href="images/figure6-2.png" id="img15" media-type="image/png"/>
+    <item href="images/figure6-3.png" id="img16" media-type="image/png"/>
+    <item href="images/figureB-1.png" id="img17" media-type="image/png"/>
+    <item href="images/figureB-2.png" id="img18" media-type="image/png"/>
     <item href="index_split_000.html" id="id212" media-type="application/xhtml+xml"/>
     <item href="index_split_001.html" id="id211" media-type="application/xhtml+xml"/>
     <item href="index_split_002.html" id="id210" media-type="application/xhtml+xml"/>
@@ -24,7 +41,6 @@
     <item href="index_split_008.html" id="id24" media-type="application/xhtml+xml"/>
     <item href="index_split_009.html" id="id23" media-type="application/xhtml+xml"/>
     <item href="index_split_010.html" id="id22" media-type="application/xhtml+xml"/>
-    <item href="index_split_011.html" id="id21" media-type="application/xhtml+xml"/>
     <item href="page_styles.css" id="page_css" media-type="text/css"/>
     <item href="stylesheet.css" id="css" media-type="text/css"/>
     <item href="titlepage.xhtml" id="titlepage" media-type="application/xhtml+xml"/>
@@ -43,7 +59,6 @@
     <itemref idref="id24"/>
     <itemref idref="id23"/>
     <itemref idref="id22"/>
-    <itemref idref="id21"/>
   </spine>
   <guide>
     <reference href="titlepage.xhtml" title="Title Page" type="cover"/>

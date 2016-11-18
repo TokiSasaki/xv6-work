@@ -6,53 +6,64 @@
   <link href="stylesheet.css" rel="stylesheet" type="text/css"/>
 <link href="page_styles.css" rel="stylesheet" type="text/css"/>
 </head>
-  <body class="calibre">
+<body class="calibre">
+
 <p class="block_12" id="calibre_pb_13">Appendix A</p>
-	<h1 id="id_Toc460887582" class="block_13">PC hardware</h1>
+
+<h1 id="id_Toc460887582" class="block_13">PC hardware</h1>
 <p class="paragraph01">This appendix describes personal computer (PC) hardware, the platform on which xv6 runs.</p>
 <p class="paragraph01">A PC is a computer that adheres to several industry standards, with the goal that a given piece of software can run on PCs sold by multiple vendors. These standards evolve over time and a PC from 1990s doesn't look like a PC now.</p>
 <p class="paragraph01">From the outside a PC is a box with a keyboard, a screen, and various devices (e.g., CD-rom, etc.). Inside the box is a circuit board (the ''motherboard'') with CPU chips, memory chips, graphic chips, I/O controller chips, and busses through which the chips communicate. The busses adhere to standard protocols (e.g., PCI and USB) so that devices will work with PCs from multiple vendors.</p>
 <p class="paragraph01">From our point of view, we can abstract the PC into three components: CPU, memory, and input/output (I/O) devices. The CPU performs computation, the memory contains instructions and data for that computation, and devices allow the CPU to interact with hardware for storage, communication, and other functions.</p>
 <p class="paragraph01">You can think of main memory as connected to the CPU with a set of wires, or lines, some for address bits, some for data bits, and some for control flags. To read a value from main memory, the CPU sends high or low voltages representing 1 or 0 bits on the address lines and a 1 on the ''read'' line for a prescribed amount of time and then reads back the value by interpreting the voltages on the data lines. To write a value to main memory, the CPU sends appropriate bits on the address and data lines and a 1 on the ''write'' line for a prescribed amount of time. Real memory interfaces are more complex than this, but the details are only important if you need to achieve high performance.</p>
-	<h3 class="block_17">Processor and memory</h3>
+
+
+<h3 class="block_17">Processor and memory</h3>
 <p class="paragraph01">A computer's CPU (central processing unit, or processor) runs a conceptually simple loop: it consults an address in a register called the <span class="text_3">program counter</span>, reads a machine instruction from that address in memory, advances the program counter past the instruction, and executes the instruction. Repeat. If the execution of the instruction does not modify the program counter, this loop will interpret the memory pointed at by the program counter as a sequence of machine instructions to run one after the other. Instructions that do change the program counter include branches and function calls.</p>
 <p class="paragraph01">The execution engine is useless without the ability to store and modify program data. The fastest storage for data is provided by the processor's register set. A register is a storage cell inside the processor itself, capable of holding a machine word-sized value (typically 16, 32, or 64 bits). Data stored in registers can typically be read or written quickly, in a single CPU cycle.</p>
 <p class="paragraph01">PCs have a processor that implements the x86 instruction set, which was originally defined by Intel and has become a standard. Several manufacturers produce processors that implement the instruction set. Like all other PC standards, this standard is also evolving but newer standards are backwards compatible with past standards. The boot loader has to deal with some of this evolution because every PC processor starts simulating an Intel 8088, the CPU chip in the original IBM PC released in 1981. However, for most of xv6 you will be concerned with the modern x86 instruction set.</p>
 <p class="paragraph01">The modern x86 provides eight general purpose 32-bit registers—<span class="text_3">%eax</span>, <span class="text_3">%ebx</span>,</p>
-<p class="paragraph01"><span class="text_3">%ecx</span>, <span class="text_3">%edx</span>, <span class="text_3">%edi</span>, <span class="text_3">%esi</span>, <span class="text_3">%ebp</span>, and <span class="text_3">%esp</span>—and a program counter <span class="text_3">%eip </span>(the ' <span class="text_3">instruction pointer</span>). The common <span class="text_3">e </span>prefix stands for extended, as these are 32-bit extensions of the 16-bit registers <span class="text_3">%ax</span>, <span class="text_3">%bx</span>, <span class="text_3">%cx</span>, <span class="text_3">%dx</span>, <span class="text_3">%di</span>, <span class="text_3">%si</span>, <span class="text_3">%bp</span>, <span class="text_3">%sp</span>, and <span class="text_3">%ip</span>. The two register sets are aliased so that, for example, <span class="text_3">%ax </span>is the bottom half of <span class="text_3">%eax</span>: writing to <span class="text_3">%ax </span>changes the value stored in <span class="text_3">%eax </span>and vice versa. The first four registers also have names for the bottom two 8-bit bytes: <span class="text_3">%al </span>and <span class="text_3">%ah </span>denote the low and high 8 bits of <span class="text_3">%ax</span>; <span class="text_3">%bl</span>, <span class="text_3">%bh</span>, <span class="text_3">%cl</span>, <span class="text_3">%ch</span>, <span class="text_3">%dl</span>, and <span class="text_3">%dh </span>continue the pattern. In addition to these registers, the x86 has eight 80-bit floating-point registers as well as a handful of special-purpose registers like the <span class="text_3">control registers %cr0</span>, <span class="text_3">%cr2</span>, <span class="text_3">%cr3</span>, and <span class="text_3">%cr4</span>; the debug registers <span class="text_3">%dr0</span>, <span class="text_3">%dr1</span>, <span class="text_3">%dr2</span>, and <span class="text_3">%dr3</span>; the <span class="text_3">segment registers %cs</span>, <span class="text_3">%ds</span>, <span class="text_3">%es</span>, <span class="text_3">%fs</span>, <span class="text_3">%gs</span>, and <span class="text_3">%ss</span>; and the global and local descriptor table pseudo-registers <span class="text_3">%gdtr </span>and <span class="text_3">%ldtr</span>. The control registers and segment registers are important to any operating system. The floating-point and debug registers are less interesting and not used by xv6.</p>
+<p class="paragraph01"><span class="text_3">%ecx</span>, <span class="text_3">%edx</span>, <span class="text_3">%edi</span>, <span class="text_3">%esi</span>, <span class="text_3">%ebp</span>, and <span class="text_3">%esp</span>—and a program counter <span class="text_3">%eip</span> (the ' <span class="text_3">instruction pointer</span>). The common <span class="text_3">e</span> prefix stands for extended, as these are 32-bit extensions of the 16-bit registers <span class="text_3">%ax</span>, <span class="text_3">%bx</span>, <span class="text_3">%cx</span>, <span class="text_3">%dx</span>, <span class="text_3">%di</span>, <span class="text_3">%si</span>, <span class="text_3">%bp</span>, <span class="text_3">%sp</span>, and <span class="text_3">%ip</span>. The two register sets are aliased so that, for example, <span class="text_3">%ax</span> is the bottom half of <span class="text_3">%eax</span>: writing to <span class="text_3">%ax</span> changes the value stored in <span class="text_3">%eax</span> and vice versa. The first four registers also have names for the bottom two 8-bit bytes: <span class="text_3">%al</span> and <span class="text_3">%ah</span> denote the low and high 8 bits of <span class="text_3">%ax</span>; <span class="text_3">%bl</span>, <span class="text_3">%bh</span>, <span class="text_3">%cl</span>, <span class="text_3">%ch</span>, <span class="text_3">%dl</span>, and <span class="text_3">%dh</span> continue the pattern. In addition to these registers, the x86 has eight 80-bit floating-point registers as well as a handful of special-purpose registers like the <span class="text_3">control registers %cr0</span>, <span class="text_3">%cr2</span>, <span class="text_3">%cr3</span>, and <span class="text_3">%cr4</span>; the debug registers <span class="text_3">%dr0</span>, <span class="text_3">%dr1</span>, <span class="text_3">%dr2</span>, and <span class="text_3">%dr3</span>; the <span class="text_3">segment registers %cs</span>, <span class="text_3">%ds</span>, <span class="text_3">%es</span>, <span class="text_3">%fs</span>, <span class="text_3">%gs</span>, and <span class="text_3">%ss</span>; and the global and local descriptor table pseudo-registers <span class="text_3">%gdtr</span> and <span class="text_3">%ldtr</span>. The control registers and segment registers are important to any operating system. The floating-point and debug registers are less interesting and not used by xv6.</p>
 <p class="paragraph01">Registers are fast but expensive. Most processors provide at most a few tens of general-purpose registers. The next conceptual level of storage is the main random-access memory (RAM). Main memory is 10-100x slower than a register, but it is much cheaper, so there can be more of it. One reason main memory is relatively slow is that it is physically separate from the processor chip. An x86 processor has a few dozen registers, but a typical PC today has gigabytes of main memory. Because of the enormous differences in both access speed and size between registers and main memory, most processors, including the x86, store copies of recently-accessed sections of main memory in on-chip cache memory. The cache memory serves as a middle ground between registers and memory both in access time and in size. Today's x86 processors typically have two levels of cache, a small first-level cache with access times relatively close to the processor's clock rate and a larger second-level cache with access times in between the first-level cache and main memory. This table shows actual numbers for an Intel Core 2 Duo system:</p>
-<p class="paragraph01">Intel Core 2 Duo E7200 at 2.53 GHz</p>
+
+
+<p class="paragraph01"><b>Intel Core 2 Duo E7200 at 2.53 GHz</b></p>
 <p class="paragraph01">TODO: Plug in non-made-up numbers!</p>
-	<table class="table_2">
-		<tbody class="calibre14"><tr class="calibre15">
-			<td class="td_11"><p class="paragraph01">storage</p></td>
-			<td class="td_12"><p class="paragraph01">access time</p></td>
-			<td class="td_13"><p class="paragraph01">size</p></td>
-		</tr>
-		<tr class="calibre15">
-			<td class="td_14"><p class="paragraph01">register</p></td>
-			<td class="td_15"><p class="paragraph01">0.6 ns</p></td>
-			<td class="td_16"><p class="paragraph01">64 bytes</p></td>
-		</tr>
-		<tr class="calibre15">
-			<td class="td_14"><p class="paragraph01">L1 cache</p></td>
-			<td class="td_15"><p class="paragraph01">0.5 ns</p></td>
-			<td class="td_16"><p class="paragraph01">64 kilobytes</p></td>
-		</tr>
-		<tr class="calibre15">
-			<td class="td_14"><p class="paragraph01">L2 cache</p></td>
-			<td class="td_15"><p class="paragraph01">10 ns</p></td>
-			<td class="td_16"><p class="paragraph01">4 megabytes</p></td>
-		</tr>
-		<tr class="calibre15">
-			<td class="td_17"><p class="paragraph01">main memory</p></td>
-			<td class="td_18"><p class="paragraph01">100 ns</p></td>
-			<td class="td_19"><p class="paragraph01">4 gigabytes</p></td>
-		</tr>
-	</tbody></table>
+<table>
+    <tbody>
+        <tr>
+            <td><b>storage</b></td>
+            <td><b>access time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</b></td>
+            <td><b>size</b></td>
+        </tr>
+        <tr>
+            <td>register</td>
+            <td>0.6 ns</td>
+            <td>64 bytes</td>
+        </tr>
+        <tr>
+             <td>L1 cache</td>
+             <td>0.5 ns</td>
+             <td>64 kilobytes</td>
+        </tr>
+        <tr>
+             <td>L2 cache</td>
+             <td>10 ns</td>
+             <td>4 megabytes</td>
+        </tr>
+        <tr>
+             <td>main memory&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+             <td>100 ns</td>
+             <td>4 gigabytes</td>
+        </tr>
+    </tbody>
+</table>
+
+
 <p class="paragraph01">For the most part, x86 processors hide the cache from the operating system, so we can think of the processor as having just two kinds of storage—registers and memory—and not worry about the distinctions between the different levels of the memory hierarchy.</p>
-	<h3 class="block_17">I/O</h3>
-<p class="paragraph01">Processors must communicate with devices as well as memory. The x86 processor provides special <span class="text_3">in </span>and <span class="text_3">out </span>instructions that read and write values from device addresses called <span class="text_3">I/O ports</span>. The hardware implementation of these instructions is essentially the same as reading and writing memory. Early x86 processors had an extra address line: 0 meant read/write from an I/O port and 1 meant read/write from main memory. Each hardware device monitors these lines for reads and writes to its assigned range of I/O ports. A device's ports let the software configure the device, examine its status, and cause the device to take actions; for example, software can use I/O port reads and writes to cause the disk interface hardware to read and write sectors on the disk.</p>
-<p class="paragraph01">Many computer architectures have no separate device access instructions. Instead the devices have fixed memory addresses and the processor communicates with the device (at the operating system's behest) by reading and writing values at those addresses. In fact, modern x86 architectures use this technique, called <span class="text_3">memory-mapped I/O</span>, for most high-speed devices such as network, disk, and graphics controllers. For reasons of backwards compatibility, though, the old <span class="text_3">in </span>and <span class="text_3">out </span>instructions linger, as do legacy hardware devices that use them, such as the IDE disk controller, which xv6 uses.</p>
-<p class="block_4"> </p>
+
+
+<h3 class="block_17">I/O</h3>
+<p class="paragraph01">Processors must communicate with devices as well as memory. The x86 processor provides special <span class="text_3">in</span> and <span class="text_3">out</span> instructions that read and write values from device addresses called <span class="text_3">I/O ports</span>. The hardware implementation of these instructions is essentially the same as reading and writing memory. Early x86 processors had an extra address line: 0 meant read/write from an I/O port and 1 meant read/write from main memory. Each hardware device monitors these lines for reads and writes to its assigned range of I/O ports. A device's ports let the software configure the device, examine its status, and cause the device to take actions; for example, software can use I/O port reads and writes to cause the disk interface hardware to read and write sectors on the disk.</p>
+<p class="paragraph01">Many computer architectures have no separate device access instructions. Instead the devices have fixed memory addresses and the processor communicates with the device (at the operating system's behest) by reading and writing values at those addresses. In fact, modern x86 architectures use this technique, called <span class="text_3">memory-mapped I/O</span>, for most high-speed devices such as network, disk, and graphics controllers. For reasons of backwards compatibility, though, the old <span class="text_3">in</span> and <span class="text_3">out</span> instructions linger, as do legacy hardware devices that use them, such as the IDE disk controller, which xv6 uses.</p>
 	</body></html>

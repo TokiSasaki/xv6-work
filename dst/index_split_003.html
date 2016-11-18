@@ -65,15 +65,15 @@ unlink(filename)           Remove a file
 <pre><code>
 int pid = fork();
 if(pid &gt; 0){ printf("parent: child=%d\n", pid);
-	pid = wait();
-	printf("child %d is done\n", pid);
+    pid = wait();
+    printf("child %d is done\n", pid);
 }
 else if(pid == 0){
-	printf("child: exiting\n");
-	exit();
+    printf("child: exiting\n");
+    exit();
 }
 else {
-	printf("fork error\n");
+    printf("fork error\n");
 }
 </code></pre>
 </p>
@@ -135,16 +135,16 @@ printf("exec error\n");
 char buf[512]; 
 int n;
 for(;;){
-	n = read(0, buf, sizeof buf); 
-	if(n == 0) break;
-	if(n &lt; 0){
-		fprintf(2, "read error\n"); 
-		exit();
-	}
-	if(write(1, buf, n) != n){
-		fprintf(2, "write error\n"); 
-		exit();
-	}
+    n = read(0, buf, sizeof buf); 
+    if(n == 0) break;
+    if(n &lt; 0){
+        fprintf(2, "read error\n"); 
+        exit();
+    }
+    if(write(1, buf, n) != n){
+        fprintf(2, "write error\n"); 
+        exit();
+    }
 }
 </code></pre>
 </p>
@@ -161,9 +161,9 @@ char *argv[2];
 argv[0] = "cat";
 argv[1] = 0;
 if(fork() == 0){
-	close(0);
-	open("input.txt", O_RDONLY);
-	exec("cat", argv);
+    close(0);
+    open("input.txt", O_RDONLY);
+    exec("cat", argv);
 }
 </code></pre>
 </p>
@@ -177,12 +177,12 @@ if(fork() == 0){
 <p class="paragraph01">
 <pre><code>
 if(fork() == 0){
-	write(1, "hello ", 6);
-	exit();
+    write(1, "hello ", 6);
+    exit();
 }
 else{
-	wait();
-	write(1, "world\n", 6);
+    wait();
+    write(1, "world\n", 6);
 }
 </code></pre>
 </p>
@@ -217,16 +217,16 @@ argv[0] = "wc";
 argv[1] = 0;
 pipe(p);
 if(fork() == 0){
-	close(0);
-	dup(p[0]);
-	close(p[0]);
-	close(p[1]);
-	exec("/bin/wc", argv);
+    close(0);
+    dup(p[0]);
+    close(p[0]);
+    close(p[1]);
+    exec("/bin/wc", argv);
 }
 else{
-	write(p[1], "hello world\n", 12);
-	close(p[0]);
-	close(p[1]);
+    write(p[1], "hello world\n", 12);
+    close(p[0]);
+    close(p[1]);
 }
 </code></pre>
 </p>
@@ -293,11 +293,11 @@ mknod("/console", 1, 1);
 #define T_DEV  3 // Device
 
 struct stat {
-	short type;  // Type of file
-	int dev;     // File system's disk device
-	uint ino;    // Inode number
-	short nlink; // Number of links to file
-	uint size;   // Size of file in bytes
+    short type;  // Type of file
+    int dev;     // File system's disk device
+    uint ino;    // Inode number
+    short nlink; // Number of links to file
+    uint size;   // Size of file in bytes
 };
 </p>
 
@@ -347,7 +347,7 @@ unlink("/tmp/xyz");
 
 
 <p class="paragraph01">Chapter 1</p>
-	<h1 id="id_Toc460887575" class="block_13">Operating system organization</h1>
+    <h1 id="id_Toc460887575" class="block_13">Operating system organization</h1>
 <p class="paragraph01">A key requirement for an operating system is to support several activities. For example, using the system call interface described in chapter 0 a process can start new processes using <span class="text_3">fork</span>. The operating system must arrange that these processes can <span class="text_3">time-share</span> the resources of the computer. For example, a process may start more new processes than there are processors in the computer, yet all processes must be able to make some progress. In addition, the operating system must arrange for <span class="text_3">isolation</span> between the processes. That is, if one process has a bug and fails, it shouldn't impact processes that don't have a dependency on the failed process. Complete isolation, however, is too strong, since it should be possible for processes to interact; for example, it is convenient for users to combine processes to perform complex tasks (e.g., by using pipes). Thus, the implementation of an operating system must achieve three requirements: multiplexing, isolation, and interaction.</p>
 <p class="paragraph01">This chapter provides an overview of how operating systems are organized to achieve these 3 requirements. It turns out there are many ways to do so, but this text focuses on mainstream designs centered around a <span class="text_3">monolithic kernel</span>, which is used by many Unix operating systems. This chapter illustrates this organization by tracing the first process that is created when xv6 starts running. In doing so, the text provides a glimpse of the implementation of all major abstractions that xv6 provides, how they interact, and how the three requirements of multiplexing, isolation, and interaction are met. Most of xv6 avoids special-casing the first process, and instead reuses code that xv6 must provide for standard operation. Subsequent chapters will explore each abstraction in more detail.</p>
 <p class="paragraph01">Xv6 runs on Intel 80386 or later (''x86'') processors on a PC platform, and much of its low-level functionality (for example, its process implementation) is x86-specific. This book assumes the reader has done a bit of machine-level programming on some architecture, and will introduce x86-specific ideas as they come up. Appendix A briefly outlines the PC platform.</p>
@@ -466,8 +466,8 @@ unlink("/tmp/xyz");
 
 <h3 class="block_90">Exercises</h3>
 <ol>
-	<li>Set a breakpoint at swtch. Single step with gdb's <span class="text_3">stepi</span> through the ret to <span class="text_3">forkret</span>, then use gdb's <span class="text_3">finish</span> to proceed to <span class="text_3">trapret</span>, then <span class="text_3">stepi</span> until you get to <span class="text_3">initcode</span> at virtual address zero.</li>
-	<li><span class="text_3">KERNBASE</span> limits the amount of memory a single process can use, which might be irritating on a machine with a full 4 GB of RAM. Would raising <span class="text_3">KERNBASE</span> allow a process to use more memory?</li>
+    <li>Set a breakpoint at swtch. Single step with gdb's <span class="text_3">stepi</span> through the ret to <span class="text_3">forkret</span>, then use gdb's <span class="text_3">finish</span> to proceed to <span class="text_3">trapret</span>, then <span class="text_3">stepi</span> until you get to <span class="text_3">initcode</span> at virtual address zero.</li>
+    <li><span class="text_3">KERNBASE</span> limits the amount of memory a single process can use, which might be irritating on a machine with a full 4 GB of RAM. Would raising <span class="text_3">KERNBASE</span> allow a process to use more memory?</li>
 </ol>
 
 </body></html>

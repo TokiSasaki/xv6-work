@@ -79,132 +79,126 @@
 </code></pre>
 </p>
 <p class="paragraph01"><span class="text_3">Send</span> loops until the queue is empty (<span class="text_3">ptr == 0)</span> and then puts the pointer <span class="text_3">p</span> in the queue. <span class="text_3">Recv</span> loops until the queue is non-empty and takes the pointer out. When run in different processes, <span class="text_3">send</span> and <span class="text_3">recv</span> both modify <span class="text_3">q-&gt;ptr</span>, but <span class="text_3">send</span> only writes the pointer when it is zero and <span class="text_3">recv</span> only writes the pointer when it is nonzero, so no updates are lost.</p>
-<p class="paragraph01">The implementation above is expensive. If the sender sends rarely, the receiver will spend most of its time spinning in the <span class="text_3">while</span> loop hoping for a pointer. The receiver's CPU could find more productive work if there were a way for the receiver to</p>
-<p class="paragraph01"><span class="text_12"></span><span class="text_12">215<span class="tab">       </span>216</span></p>
-<p class="paragraph01">wait for wakeup forever</p>
-<p class="paragraph01">test<span class="tab">       </span>sleep recv</p>
-<p class="paragraph01"></p>
-<p class="paragraph01">Time</p>
-<p class="paragraph01"><span class="text_12"></span><span class="text_12">send<span class="tab">       </span></span><span class="text_12"></span></p>
-	<table class="table_">
-		<tbody class="calibre14"><tr class="calibre15">
-			<td class="td_"><p class="paragraph01">206</p><p class="paragraph01">store p</p></td>
-			<td class="td_1"><p class="paragraph01">207 wakeup</p></td>
-			<td class="td_1"><p class="paragraph01">204 test</p></td>
-			<td class="td_2"><p class="paragraph01">205</p><p class="paragraph01">spin forever</p></td>
-		</tr>
-	</tbody></table>
+<p class="paragraph01">The implementation above is expensive. If the sender sends rarely, the receiver will spend most of its time spinning in the <span class="text_3">while</span> loop hoping for a pointer. The receiver's CPU could find more productive work if there were a way for the receiver to yield the CPU and resume only when <span class="text_3">send</span> delivered a pointer.</p>
+
+
+
+
+<p class="paragraph01"><img alt="Image" src="images/figure5-2.png" class="calibre7"/></p>
 <p class="paragraph01"><b>Figure 5-2</b>. Example lost wakeup problem</p>
-<p class="paragraph01">yield the CPU and resume only when <span class="text_3">send</span> delivered a pointer.</p>
+
+
 <p class="paragraph01">Let's imagine a pair of calls, <span class="text_3">sleep</span> and <span class="text_3">wakeup</span>, that work as follows. <span class="text_3">Sleep(chan)</span> sleeps on the arbitrary value <span class="text_3">chan</span>, called the <span class="text_3">wait channel</span>. <span class="text_3">Sleep</span> puts the calling process to sleep, releasing the CPU for other work. <span class="text_3">Wakeup(chan)</span> wakes all processes sleeping on <span class="text_3">chan</span> (if any), causing their <span class="text_3">sleep</span> calls to return. If no processes are waiting on <span class="text_3">chan</span>, <span class="text_3">wakeup</span> does nothing. We can change the queue implementation to use <span class="text_3">sleep</span> and <span class="text_3">wakeup</span>:</p>
-	<div class="calibre13">
-	<div class="block_132">201 void*</div>
-	<div class="block_132">202 send(struct q *q, void *p)</div>
-	<div class="block_132">203 {</div>
-	<div class="block_132">204 while(q-&gt;ptr != 0)</div>
-	<div class="block_170">205 <span class="text_5"><span class="text_27">;</span></span></div>
-	<div class="block_132">206 q-&gt;ptr = p;</div>
-	<div class="block_132">207 wakeup(q); /* wake recv */</div>
-	<div class="block_133">208 }</div>
-</div>
-<p class="paragraph01">209</p>
-	<div class="calibre10">
-	<div class="block_132">210 void*</div>
-	<div class="block_132">211 recv(struct q *q)</div>
-	<div class="block_132">212 {</div>
-	<div class="block_133">213 void *p;</div>
-</div>
-<p class="paragraph01">214</p>
-	<div class="calibre10">
-	<div class="block_171">215 while((p = q-&gt;ptr) == 0)</div>
-	<div class="block_171">216 sleep(q); 217 <span class="tab">       q-&gt;ptr = 0;</span></div>
-</div>
-	<div class="calibre10">
-	<div class="block_132">218 return p;</div>
-	<div class="block_172">219 }</div>
-</div>
+
+
+<p class="paragraph01">
+<pre><code>
+201    void*
+202    send(struct q *q, void *p)
+203    {
+204        while(q-&gt;ptr != 0)
+205            ;
+206        q-&gt;ptr = p;
+207        wakeup(q); /* wake recv */
+208    }
+209
+210    void*
+211    recv(struct q *q)
+212    {
+213        void *p;
+214
+215        while((p = q-&gt;ptr) == 0)
+216        sleep(q);
+217        q-&gt;ptr = 0;
+218        return p;
+219    }
+</code></pre>
+</p>
+
+
+
 <p class="paragraph01"><span class="text_3">Recv</span> now gives up the CPU instead of spinning, which is nice. However, it turns out not to be straightforward to design <span class="text_3">sleep</span> and <span class="text_3">wakeup</span> with this interface without suffering from what is known as the ''lost wake-up'' problem (see Figure 5-2). Suppose that <span class="text_3">recv</span> finds that <span class="text_3">q-&gt;ptr == 0</span> on line 215. While <span class="text_3">recv</span> is between lines 215 and 216, <span class="text_3">send</span> runs on another CPU: it changes <span class="text_3">q-&gt;ptr</span> to be nonzero and calls <span class="text_3">wakeup</span>, which finds no processes sleeping and thus does nothing. Now <span class="text_3">recv</span> continues executing at line 216: it calls <span class="text_3">sleep</span> and goes to sleep. This causes a problem: <span class="text_3">recv</span> is asleep waiting for a pointer that has already arrived. The next <span class="text_3">send</span> will sleep waiting for <span class="text_3">recv</span> to consume the pointer in the queue, at which point the system will be <span class="text_3">deadlocked</span>.</p>
 <p class="paragraph01">The root of this problem is that the invariant that <span class="text_3">recv</span> only sleeps when <span class="text_3">q-&gt;ptr == 0</span> is violated by <span class="text_3">send</span> running at just the wrong moment. One incorrect way of protecting the invariant would be to modify the code for <span class="text_3">recv</span> as follows:</p>
-	<div class="calibre10">
-	<div class="block_132">300 struct q {</div>
-	<div class="block_132">301 struct spinlock lock;</div>
-	<div class="block_132">302 void *ptr;</div>
-	<div class="block_133">303 };</div>
-</div>
-<p class="paragraph01">304</p>
-	<div class="calibre16">
-	<div class="block_132">305 void*</div>
-	<div class="block_132">306 send(struct q *q, void *p)</div>
-	<div class="block_132">307 {</div>
-	<div class="block_132">308 acquire(&amp;q-&gt;lock); 309 <span class="tab">       while(q-&gt;ptr != 0)</span></div>
-</div>
-	<div class="calibre13">
-	<div class="block_132">310 ;</div>
-	<div class="block_132">311 q-&gt;ptr = p;</div>
-	<div class="block_132">312 wakeup(q);</div>
-	<div class="block_132">313 release(&amp;q-&gt;lock);</div>
-	<div class="block_133">314 }</div>
-</div>
-<p class="paragraph01">315</p>
-	<div class="calibre10">
-	<div class="block_132">316 void*</div>
-	<div class="block_132">317 recv(struct q *q)</div>
-	<div class="block_132">318 {</div>
-	<div class="block_133">319 void *p;</div>
-</div>
-<p class="paragraph01">320</p>
-	<div class="calibre10">
-	<div class="block_132">321 acquire(&amp;q-&gt;lock);</div>
-	<div class="block_132">322 while((p = q-&gt;ptr) == 0)</div>
-	<div class="block_132">323 sleep(q); 324 <span class="tab">       q-&gt;ptr = 0;</span></div>
-</div>
-	<div class="calibre10">
-	<div class="block_132">325 release(&amp;q-&gt;lock);</div>
-	<div class="block_132">326 return p;</div>
-	<div class="block_174">327 }</div>
-</div>
+
+
+<p class="paragraph01">
+<pre><code>
+300    struct q {
+301        struct spinlock lock;
+302        void *ptr;
+303    };
+304
+305    void*
+306    send(struct q *q, void *p)
+307    {
+308        acquire(&amp;q-&gt;lock);
+309        while(q-&gt;ptr != 0)
+310            ;
+311        q-&gt;ptr = p;
+312        wakeup(q);
+313        release(&amp;q-&gt;lock);
+314    }
+315
+316    void*
+317    recv(struct q *q)
+318    {
+319        void *p;
+320
+321        acquire(&amp;q-&gt;lock);
+322        while((p = q-&gt;ptr) == 0)
+323            sleep(q);
+324        q-&gt;ptr = 0;
+325        release(&amp;q-&gt;lock);
+326        return p;
+327    }
+</code></pre>
+</p>
+
+
 <p class="paragraph01">One might hope that this version of <span class="text_3">recv</span> would avoid the lost wakeup because the lock prevents <span class="text_3">send</span> from executing between lines 322 and 323. It does that, but it also deadlocks: <span class="text_3">recv</span> holds the lock while it sleeps, so the sender will block forever waiting for the lock.</p>
 <p class="paragraph01">We'll fix the preceding scheme by passing the lock to <span class="text_3">sleep</span> so it can release the lock after the calling process is marked as asleep and waiting on the sleep channel. The lock will force a concurrent <span class="text_3">send</span> to wait until the receiver has finished putting itself to sleep, so that the <span class="text_3">wakeup</span> will find the sleeping receiver and wake it up. Once the receiver is awake again <span class="text_3">sleep</span> reacquires the lock before returning. Our new correct scheme is useable as follows:</p>
-	<div class="calibre10">
-	<div class="block_132">400 struct q {</div>
-	<div class="block_132">401 struct spinlock lock;</div>
-	<div class="block_132">402 void *ptr;</div>
-	<div class="block_133">403 };</div>
-</div>
-<p class="paragraph01">404</p>
-	<div class="calibre16">
-	<div class="block_132">405 void*</div>
-	<div class="block_132">406 send(struct q *q, void *p)</div>
-	<div class="block_132">407 {</div>
-	<div class="block_132">408 acquire(&amp;q-&gt;lock); 409 <span class="tab">       while(q-&gt;ptr != 0)</span></div>
-</div>
-	<div class="calibre13">
-	<div class="block_132">410 ;</div>
-	<div class="block_132">411 q-&gt;ptr = p;</div>
-	<div class="block_132">412 wakeup(q);</div>
-	<div class="block_132">413 release(&amp;q-&gt;lock);</div>
-	<div class="block_133">414 }</div>
-</div>
-<p class="paragraph01">415</p>
-	<div class="calibre10">
-	<div class="block_132">416 void*</div>
-	<div class="block_132">417 recv(struct q *q)</div>
-	<div class="block_132">418 {</div>
-	<div class="block_133">419 void *p;</div>
-</div>
-<p class="paragraph01">420</p>
-	<div class="calibre13">
-	<div class="block_132">421 acquire(&amp;q-&gt;lock);</div>
-	<div class="block_132">422 while((p = q-&gt;ptr) == 0)</div>
-	<div class="block_132">423 sleep(q, &amp;q-&gt;lock);</div>
-	<div class="block_132">424 q-&gt;ptr = 0;</div>
-	<div class="block_132">425 release(&amp;q-&gt;lock);</div>
-	<div class="block_132">426 return p;</div>
-	<div class="block_176">427 }</div>
-</div>
+
+
+<p class="paragraph01">
+<pre><code>
+400    struct q {
+401        struct spinlock lock;
+402        void *ptr;
+403    };
+404
+405    void*
+406    send(struct q *q, void *p)
+407    {
+408        acquire(&amp;q-&gt;lock);
+409        while(q-&gt;ptr != 0)
+410            ;
+411        q-&gt;ptr = p;
+412        wakeup(q);
+413        release(&amp;q-&gt;lock);
+414    }
+415
+416    void*
+417    recv(struct q *q)
+418    {
+419        void *p;
+420
+421        acquire(&amp;q-&gt;lock);
+422        while((p = q-&gt;ptr) == 0)
+423            sleep(q, &amp;q-&gt;lock);
+424        q-&gt;ptr = 0;
+425        release(&amp;q-&gt;lock);
+426        return p;
+427    }
+</code></pre>
+</p>
+
+
+
 <p class="paragraph01">The fact that <span class="text_3">recv</span> holds <span class="text_3">q-&gt;lock</span> prevents <span class="text_3">send</span> from trying to wake it up between <span class="text_3">recv</span>'s check of <span class="text_3">q-&gt;ptr</span> and its call to <span class="text_3">sleep</span>. Of course, the receiving process must release <span class="text_3">q-&gt;lock</span> while it is sleeping so the sender can wake it up. So we want sleep to atomically release <span class="text_3">q-&gt;lock</span> and put the receiving process to sleep.</p>
 <p class="paragraph01">A complete sender/receiver implementation would also sleep in <span class="text_3">send</span> when waiting for a receiver to consume the value from a previous <span class="text_3">send</span>.</p>
-	<h3 class="block_90">Code: Sleep and wakeup</h3>
+
+
+<h3 class="block_90">Code: Sleep and wakeup</h3>
 <p class="paragraph01">Let's look at the implementation of <span class="text_3">sleep</span> and <span class="text_3">wakeup</span> in xv6. The basic idea is to have <span class="text_3">sleep</span> mark the current process as <span class="text_3">SLEEPING</span> and then call <span class="text_3">sched</span> to release the processor; <span class="text_3">wakeup</span> looks for a process sleeping on the given wait channel and marks it as <span class="text_3">RUNNABLE</span>.</p>
 <p class="paragraph01"><span class="text_3">Sleep</span> <span class="text_5">(2803)</span> begins with a few sanity checks: there must be a current process</p>
 <p class="paragraph01"><span class="text_5">(2805)</span> and <span class="text_3">sleep</span> must have been passed a lock <span class="text_5">(2808-2809)</span>. Then <span class="text_3">sleep</span> acquires <span class="text_3">ptable.lock</span> <span class="text_5">(2818)</span>. Now the process going to sleep holds both <span class="text_3">ptable.lock</span> and <span class="text_3">lk</span>. Holding <span class="text_3">lk</span> was necessary in the caller (in the example, <span class="text_3">recv</span>): it ensured that no other process (in the example, one running <span class="text_3">send</span>) could start a call <span class="text_3">wakeup(chan)</span>. Now that <span class="text_3">sleep</span> holds <span class="text_3">ptable.lock</span>, it is safe to release <span class="text_3">lk</span>: some other process may start a call to <span class="text_3">wakeup(chan)</span>, but <span class="text_3">wakeup</span> will not run until it can acquire <span class="text_3">ptable.lock</span>, so it must wait until <span class="text_3">sleep</span> has finished putting the process to sleep, keeping the <span class="text_3">wakeup</span> from missing the <span class="text_3">sleep</span>.</p>
@@ -214,14 +208,18 @@
 <p class="paragraph01"><span class="text_3">Wakeup</span> must always be called while holding a lock that guards whatever the wakeup condition is; in the example above that lock is <span class="text_3">q-&gt;lock</span>. The complete argument for why the sleeping process won't miss a wakeup is that at all times from before it checks the condition until after it is asleep, it holds either the lock on the condition or the <span class="text_3">ptable.lock</span> or both. Since <span class="text_3">wakeup</span> executes while holding both of those locks, the wakeup must execute either before the potential sleeper checks the condition, or after the potential sleeper has completed putting itself to sleep.</p>
 <p class="paragraph01">It is sometimes the case that multiple processes are sleeping on the same channel; for example, more than one process trying to read from a pipe. A single call to <span class="text_3">wakeup</span> will wake them all up. One of them will run first and acquire the lock that <span class="text_3">sleep</span> was called with, and (in the case of pipes) read whatever data is waiting in the pipe. The other processes will find that, despite being woken up, there is no data to be read. From their point of view the wakeup was ''spurious,'' and they must sleep again. For this reason sleep is always called inside a loop that checks the condition.</p>
 <p class="paragraph01">Callers of sleep and wakeup can use any mutually convenient number as the channel; in practice xv6 often uses the address of a kernel data structure involved in the waiting, such as a disk buffer. No harm is done if two uses of sleep/wakeup accidentally choose the same channel: they will see spurious wakeups, but looping as described above will tolerate this problem. Much of the charm of sleep/wakeup is that it is both lightweight (no need to create special data structures to act as sleep channels) and provides a layer of indirection (callers need not know what specific process they are interacting with).</p>
-	<h3 class="block_17">Code: Pipes</h3>
+
+
+<h3 class="block_17">Code: Pipes</h3>
 <p class="paragraph01">The simple queue we used earlier in this chapter was a toy, but xv6 contains two real queues that uses <span class="text_3">sleep</span> and <span class="text_3">wakeup</span> to synchronize readers and writers. One is in the IDE driver: processes add a disk requests to a queue and then calls <span class="text_3">sleep</span>. The interrupt handler uses <span class="text_3">wakeup</span> to alert the process that its request has completed.</p>
 <p class="paragraph01">An more complex example is the implementation of pipes. We saw the interface for pipes in Chapter 0: bytes written to one end of a pipe are copied in an in-kernel buffer and then can be read out of the other end of the pipe. Future chapters will examine the file system support surrounding pipes, but let's look now at the implementations of <span class="text_3">pipewrite</span> and <span class="text_3">piperead</span>.</p>
 <p class="paragraph01">Each pipe is represented by a <span class="text_3">struct pipe</span>, which contains a <span class="text_3">lock</span> and a <span class="text_3">data</span> buffer. The fields <span class="text_3">nread</span> and <span class="text_3">nwrite</span> count the number of bytes read from and written to the buffer. The buffer wraps around: the next byte written after <span class="text_3">buf[PIPESIZE-1]</span> is <span class="text_3">buf[0]</span>, but the counts do not wrap. This convention lets the implementation distinguish a full buffer (<span class="text_3">nwrite == nread+PIPESIZE</span>) from an empty buffer <span class="text_3">nwrite == nread</span>), but it means that indexing into the buffer must use <span class="text_3">buf[nread % PIPESIZE]</span> instead of just <span class="text_3">buf[nread]</span> (and similarly for <span class="text_3">nwrite</span>). Let's suppose that calls to <span class="text_3">piperead</span> and <span class="text_3">pipewrite</span> happen simultaneously on two different CPUs.</p>
 <p class="paragraph01"><span class="text_3">Pipewrite</span> <span class="text_5">(6530)</span> begins by acquiring the pipe's lock, which protects the counts, the data, and their associated invariants. <span class="text_3">Piperead</span> <span class="text_5">(6551)</span> then tries to acquire the lock too, but cannot. It spins in <span class="text_3">acquire</span> <span class="text_5">(1574)</span> waiting for the lock. While <span class="text_3">piperead</span> waits, <span class="text_3">pipewrite</span> loops over the bytes being written—<span class="text_3">addr[0]</span>, <span class="text_3">addr[1]</span>, ..., <span class="text_3">addr[n-1]</span>— adding each to the pipe in turn <span class="text_5">(6544)</span>. During this loop, it could happen that the buffer fills <span class="text_5">(6536)</span>. In this case, <span class="text_3">pipewrite</span> calls <span class="text_3">wakeup</span> to alert any sleeping readers to the fact that there is data waiting in the buffer and then sleeps on <span class="text_3">&amp;p-&gt;nwrite</span> to wait for a reader to take some bytes out of the buffer. <span class="text_3">Sleep</span> releases <span class="text_3">p-&gt;lock</span> as part of putting <span class="text_3">pipewrite</span>'s process to sleep.</p>
 <p class="paragraph01">Now that <span class="text_3">p-&gt;lock</span> is available, <span class="text_3">piperead</span> manages to acquire it and start running in earnest: it finds that <span class="text_3">p-&gt;nread != p-&gt;nwrite</span> <span class="text_5">(6556)</span> (<span class="text_3">pipewrite</span> went to sleep because <span class="text_3">p-&gt;nwrite == p-&gt;nread+PIPESIZE</span> <span class="text_5">(6536)</span>) so it falls through to the <span class="text_3">for</span> loop, copies data out of the pipe <span class="text_5">(6563-6567)</span>, and increments <span class="text_3">nread</span> by the number of bytes copied. That many bytes are now available for writing, so <span class="text_3">piperead</span> calls <span class="text_3">wakeup</span> <span class="text_5">(6568)</span> to wake any sleeping writers before it returns to its caller. <span class="text_3">Wakeup</span> finds a process sleeping on <span class="text_3">&amp;p-&gt;nwrite</span>, the process that was running <span class="text_3">pipewrite</span> but stopped when the buffer filled. It marks that process as <span class="text_3">RUNNABLE</span>.</p>
 <p class="paragraph01">The pipe code uses separate sleep channels for reader and writer ( <span class="text_3">p-&gt;nread</span> and <span class="text_3">p-&gt;nwrite</span>); this might make the system more efficient in the unlikely event that there are lots of readers and writers waiting for the same pipe. The pipe code sleeps inside a loop checking the sleep condition; if there are multiple readers or writers, all but the first process to wake up will see the condition is still false and sleep again.</p>
-	<h3 class="block_90">Code: Wait, exit, and kill</h3>
+
+
+<h3 class="block_90">Code: Wait, exit, and kill</h3>
 <p class="paragraph01"><span class="text_3">Sleep</span> and <span class="text_3">wakeup</span> can be used for many kinds of waiting. An interesting example, seen Chapter 0, is the <span class="text_3">wait</span> system call that a parent process uses to wait for a child to exit. In xv6, when a child exits, it does not die immediately. Instead, it switches to the <span class="text_3">ZOMBIE</span> process state until the parent calls <span class="text_3">wait</span> to learn of the exit. The parent is then responsible for freeing the memory associated with the process and preparing the <span class="text_3">struct proc</span> for reuse. If the parent exits before the child, the <span class="text_3">init</span> process adopts the child and waits for it, so that every child has a parent to clean up after it. Keep in mind the possibility of races between parent and child <span class="text_3">wait</span> and <span class="text_3">exit</span>, as well as <span class="text_3">exit</span> and <span class="text_3">exit</span>.</p>
 <p class="paragraph01"><span class="text_3">Wait</span> begins by acquiring <span class="text_3">ptable.lock</span>. Then it scans the process table looking for children. If <span class="text_3">wait</span> finds that the current process has children but that none have exited, it calls <span class="text_3">sleep</span> to wait for one of them to exit <span class="text_5">(2689)</span> and scans again. Here, the lock being released in <span class="text_3">sleep</span> is <span class="text_3">ptable.lock</span>, the special case we saw above.</p>
 <p class="paragraph01"><span class="text_3">Exit</span> acquires <span class="text_3">ptable.lock</span> and then wakes up any process sleeping on a wait channel equal to the current process's parent <span class="text_3">proc</span> <span class="text_5">(2628)</span>; if there is such a process, it will be the parent in <span class="text_3">wait</span>. This may look premature, since <span class="text_3">exit</span> has not marked the current process as a <span class="text_3">ZOMBIE</span> yet, but it is safe: although <span class="text_3">wakeup</span> may mark the parent as <span class="text_3">RUNNABLE</span>, the loop in <span class="text_3">wait</span> cannot run until <span class="text_3">exit</span> releases <span class="text_3">ptable.lock</span> by calling <span class="text_3">sched</span> to enter the scheduler, so <span class="text_3">wait</span> can't look at the exiting process until after <span class="text_3">exit</span> has set its state to <span class="text_3">ZOMBIE</span> <span class="text_5">(2640)</span>. Before exit reschedules, it reparents all of the exiting process's children, passing them to the <span class="text_3">initproc</span> <span class="text_5">(2630-2637)</span>. Finally, <span class="text_3">exit</span> calls <span class="text_3">sched</span> to relinquish the CPU.</p>
@@ -230,7 +228,9 @@
 <p class="paragraph01">While <span class="text_3">exit</span> allows a process to terminate itself, <span class="text_3">kill</span> <span class="text_5">(2875)</span> lets one process request that another be terminated. It would be too complex for <span class="text_3">kill</span> to directly destroy the victim process, since the victim might be executing on another CPU or sleeping while midway through updating kernel data structures. To address these challenges, <span class="text_3">kill</span> does very little: it just sets the victim's <span class="text_3">p-&gt;killed</span> and, if it is sleeping, wakes it up. Eventually the victim will enter or leave the kernel, at which point code in <span class="text_3">trap</span> will call <span class="text_3">exit</span> if <span class="text_3">p-&gt;killed</span> is set. If the victim is running in user space, it will soon enter the kernel by making a system call or because the timer (or some other device) interrupts.</p>
 <p class="paragraph01">If the victim process is in <span class="text_3">sleep</span>, the call to <span class="text_3">wakeup</span> will cause the victim process to return from <span class="text_3">sleep</span>. This is potentially dangerous because the condition being waiting for may not be true. However, xv6 calls to <span class="text_3">sleep</span> are always wrapped in a <span class="text_3">while</span> loop that re-tests the condition after <span class="text_3">sleep</span> returns. Some calls to <span class="text_3">sleep</span> also test <span class="text_3">p&gt;killed</span> in the loop, and abandon the current activity if it is set. This is only done when such abandonment would be correct. For example, the pipe read and write code <span class="text_5">(6537)</span> returns if the killed flag is set; eventually the code will return back to trap, which will again check the flag and exit.</p>
 <p class="paragraph01">Some xv6 <span class="text_3">sleep</span> loops do not check <span class="text_3">p-&gt;killed</span> because the code is in the middle of a multi-step system call that should be atomic. The IDE driver <span class="text_5">(4279)</span> is an example: it does not check <span class="text_3">p-&gt;killed</span> because a disk operation may be one of a set of writes that are all needed in order for the file system to be left in a correct state. To avoid the complication of cleaning up after a partial operation, xv6 delays the killing of a process that is in the IDE driver until some point later when it is easy to kill the process (e.g., when the complete file system operation has completed and the process is about to return to user space).</p>
-	<h3 class="block_17">Real world</h3>
+
+
+<h3 class="block_17">Real world</h3>
 <p class="paragraph01">The xv6 scheduler implements a simple scheduling policy, which runs each process in turn. This policy is called <span class="text_3">round robin</span>. Real operating systems implement more sophisticated policies that, for example, allow processes to have priorities. The idea is that a runnable high-priority process will be preferred by the scheduler over a runnable low-priority thread. These policies can become complex quickly because there are often competing goals: for example, the operating might also want to guarantee fairness and high-throughput. In addition, complex policies may lead to unintended interactions such as <span class="text_3">priority inversion</span> and <span class="text_3">convoys</span>. Priority inversion can happen when a low-priority and high-priority process share a lock, which when acquired by the low-priority process can cause the high-priority process to not run. A long convoy can form when many high-priority processes are waiting for a low-priority process that acquires a shared lock; once a convoy has formed they can persist for long period of time. To avoid these kinds of problems additional mechanisms are necessary in sophisticated schedulers.</p>
 <p class="paragraph01"><span class="text_3">Sleep</span> and <span class="text_3">wakeup</span> are a simple and effective synchronization method, but there are many others. The first challenge in all of them is to avoid the ''missed wakeups'' problem we saw at the beginning of the chapter. The original Unix kernel's <span class="text_3">sleep</span> simply disabled interrupts, which sufficed because Unix ran on a single-CPU system. Because xv6 runs on multiprocessors, it adds an explicit lock to <span class="text_3">sleep</span>. FreeBSD's <span class="text_3">msleep</span> takes the same approach. Plan 9's <span class="text_3">sleep</span> uses a callback function that runs with the scheduling lock held just before going to sleep; the function serves as a last minute check of the sleep condition, to avoid missed wakeups. The Linux kernel's <span class="text_3">sleep</span> uses an explicit process queue instead of a wait channel; the queue has its own internal lock.</p>
 <p class="paragraph01">Scanning the entire process list in <span class="text_3">wakeup</span> for processes with a matching <span class="text_3">chan</span> is inefficient. A better solution is to replace the <span class="text_3">chan</span> in both <span class="text_3">sleep</span> and <span class="text_3">wakeup</span> with a data structure that holds a list of processes sleeping on that structure. Plan 9's <span class="text_3">sleep</span> and <span class="text_3">wakeup</span> call that structure a rendezvous point or <span class="text_3">Rendez</span>. Many thread libraries refer to the same structure as a condition variable; in that context, the operations <span class="text_3">sleep</span> and <span class="text_3">wakeup</span> are called <span class="text_3">wait</span> and <span class="text_3">signal</span>. All of these mechanisms share the same flavor: the sleep condition is protected by some kind of lock dropped atomically during sleep.</p>
@@ -238,19 +238,27 @@
 <p class="paragraph01">Semaphores are another common coordination mechanism. A semaphore is an integer value with two operations, increment and decrement (or up and down). It is aways possible to increment a semaphore, but the semaphore value is not allowed to drop below zero: a decrement of a zero semaphore sleeps until another process increments the semaphore, and then those two operations cancel out. The integer value typically corresponds to a real count, such as the number of bytes available in a pipe buffer or the number of zombie children that a process has. Using an explicit count as part of the abstraction avoids the ''missed wakeup'' problem: there is an explicit count of the number of wakeups that have occurred. The count also avoids the spurious wakeup and thundering herd problems.</p>
 <p class="paragraph01">Terminating processes and cleaning them up introduces much complexity in xv6. In most operating systems it is even more complex, because, for example, the victim process may be deep inside the kernel sleeping, and unwinding its stack requires much careful programming. Many operating system unwind the stack using explicit mechanisms for exception handling, such as <span class="text_3">longjmp</span>. Furthermore, there are other events that can cause a sleeping process to be woken up, even though the events it is waiting for has not happened yet. For example, when a process is sleeping, another process may send a <span class="text_3">signal</span> to it. In this case, the process will return from the interrupted system call with the value -1 and with the error code set to EINTR. The application can check for these values and decide what to do. Xv6 doesn't support signals and this complexity doesn't arise.</p>
 <p class="paragraph01">Xv6's support for <span class="text_3">kill</span> is not entirely satisfactory: there are sleep loops which probably should check for <span class="text_3">p-&gt;killed</span>. A related problem is that, even for <span class="text_3">sleep</span> loops that check <span class="text_3">p-&gt;killed</span>, there is a race between <span class="text_3">sleep</span> and <span class="text_3">kill</span>; the latter may set <span class="text_3">p&gt;killed</span> and try to wake up the victim just after the victim's loop checks <span class="text_3">p-&gt;killed</span> but before it calls <span class="text_3">sleep</span>. If this problem occurs, the victim won't notice the <span class="text_3">p&gt;killed</span> until the condition it is waiting for occurs. This may be quite a bit later (e.g., when the IDE driver returns a disk block that the victim is waiting for) or never (e.g., if the victim is waiting from input from the console, but the user doesn't type any input).</p>
-	<h3 class="block_177">Exercises</h3>
-	<ol class="list_">
-	<li class="block_178">Sleep has to check lk != &amp;ptable.lock to avoid a deadlock <span class="text_5">(2817-2820)</span>. It could eliminate the special case by replacing</li>
-</ol>
-<p class="paragraph01">if(lk != &amp;ptable.lock){ acquire(&amp;ptable.lock); release(lk);</p>
-<p class="paragraph01"><span class="text_30">}</span> with</p>
-<p class="paragraph01">release(lk); acquire(&amp;ptable.lock);</p>
-<p class="paragraph01">Doing this would break <span class="text_3">sleep</span>. How?</p>
-	<ol class="list_">
-	<li value="2" class="block_183">Most process cleanup could be done by either <span class="text_3">exit</span> or <span class="text_3">wait</span>, but we saw above that <span class="text_3">exit</span> must not free <span class="text_3">p-&gt;stack</span>. It turns out that <span class="text_3">exit</span> must be the one to close the open files. Why? The answer involves pipes.</li>
-	<li class="block_128">Implement semaphores in xv6. You can use mutexes but do not use sleep andwakeup. Replace the uses of sleep and wakeup in xv6 with semaphores. Judge the result.</li>
-	<li class="block_91">Fix the race mentioned above between <span class="text_3">kill</span> and <span class="text_3">sleep</span>, so that a <span class="text_3">kill</span> that occurs after the victim's sleep loop checks <span class="text_3">p-&gt;killed</span> but before it calls <span class="text_3">sleep</span> results in the victim abandoning the current system call.</li>
-	<li class="block_92">Design a plan so that every sleep loop checks <span class="text_3">p-&gt;killed</span> <span class="text_2">so that, for example, a process that is in the IDE driver can return quickly from the while loop if another kills that process.<br class="calibre12" id="calibre_pb_9"/>
-</span></li>
+
+
+<h3 class="block_177">Exercises</h3>
+	<ol>
+	<li>Sleep has to check lk != &amp;ptable.lock to avoid a deadlock <span class="text_5">(2817-2820)</span>. It could eliminate the special case by replacing
+<pre><code>
+if(lk != &amp;ptable.lock){
+    acquire(&amp;ptable.lock);
+    release(lk);
+}
+</code></pre>
+with
+<pre><code>
+release(lk);
+acquire(&amp;ptable.lock);
+</code></pre>
+Doing this would break <span class="text_3">sleep</span>. How?</li>
+
+	<li>Most process cleanup could be done by either <span class="text_3">exit</span> or <span class="text_3">wait</span>, but we saw above that <span class="text_3">exit</span> must not free <span class="text_3">p-&gt;stack</span>. It turns out that <span class="text_3">exit</span> must be the one to close the open files. Why? The answer involves pipes.</li>
+	<li>Implement semaphores in xv6. You can use mutexes but do not use sleep andwakeup. Replace the uses of sleep and wakeup in xv6 with semaphores. Judge the result.</li>
+	<li>Fix the race mentioned above between <span class="text_3">kill</span> and <span class="text_3">sleep</span>, so that a <span class="text_3">kill</span> that occurs after the victim's sleep loop checks <span class="text_3">p-&gt;killed</span> but before it calls <span class="text_3">sleep</span> results in the victim abandoning the current system call.</li>
+	<li>Design a plan so that every sleep loop checks <span class="text_3">p-&gt;killed</span> so that, for example, a process that is in the IDE driver can return quickly from the while loop if another kills that process.</li>
 </ol>
 	</body></html>
